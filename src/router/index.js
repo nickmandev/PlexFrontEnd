@@ -4,11 +4,11 @@ import register from '@/components/register'
 import home from '@/components/home'
 
 Vue.use(Router)
-const API_URL =  'http://localhost:3000'
+
 export default new Router({
   routes: [
     {
-      path: 'sign-up',
+      path: '/sign-up',
       name: 'Sign-up',
       component: register
     },
@@ -17,5 +17,6 @@ export default new Router({
       name: 'Home',
       component: home
     }
-  ]
+  ],
+  mode: 'history'
 })
