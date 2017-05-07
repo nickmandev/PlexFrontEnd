@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import config from '../config/config';
+  import config from '../config/config';
   export default {
     name: 'register',
     data() {
@@ -42,7 +42,7 @@ import config from '../config/config';
     methods: {
       register() {
         if (this.confirm_password === this.user.password && this.testEmail()) {
-          this.$http.post('user', { user: this.user }).then(function (response) {
+          this.$http.post('users', { user: this.user }).then(function (response) {
             console.log(response);
           }), (error) => {
             console.log(error);
@@ -54,7 +54,7 @@ import config from '../config/config';
       testEmail() {
         if (config.emailRegEx.test(this.user.email)) {
           return true
-        } 
+        }
         return false
         this.message = 'Email is invalid'
       }
