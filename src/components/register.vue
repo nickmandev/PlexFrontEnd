@@ -1,5 +1,5 @@
 <template>
-  <div class="register">
+  <div id="register">
     <div v-if="message">{{this.message}}</div>
     <form v-on:submit.prevent="register">
       <div class="">
@@ -26,7 +26,7 @@
 <script>
   import config from '../config/config';
   export default {
-    name: 'register',
+    name: 'Register',
     data() {
       return {
         user: {
@@ -43,7 +43,7 @@
       register() {
         if (this.confirm_password === this.user.password && this.testEmail()) {
           this.$http.post('users', { user: this.user }).then(function (response) {
-            console.log(response);
+            this.message = response.body.message
           }), (error) => {
             console.log(error);
           }

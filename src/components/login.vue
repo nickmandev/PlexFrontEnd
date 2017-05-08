@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div id="login">
+    <div v-if="message">{{this.message}}</div>
     <form v-on:submit.prevent="login">
       <div>
         <label for="email-username"> Enter Username or Email </label>
-        <input type="text" name="email-username" v-model="user.emailUsername">
+        <input type="text" name="email-username" v-model="user.username">
       </div>
       <div>
         <label for="password"> Enter password: </label>
@@ -16,22 +17,25 @@
 
 <script>
   export default {
-    name: 'login',
+    name: 'Login',
     data() {
       return {
         user: {
-          emailUsername: '',
+          username: '',
           password: ''
-        }
+        },
+        message: ''
       }
     },
 
     methods: {
       login() {
-        this.$http.post('sessions', { user: this.user }).then(function (response) {
-          console.log(response);
+        this.$http.post('authenticate', { user: this.user }).then(function (response) {
+          response.body.auth_token ? this.message = "Logged in" : console.log('nah')
+          this.$store.commit('setToken', response.body.auth_token)
+          console.log(response)
         }), (error) => {
-          console.log(error);
+          this.message = "Wrong credentials"
         }
       }
     }
