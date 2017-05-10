@@ -17,7 +17,7 @@
 
 <script>
   export default {
-    name: 'Login',
+    name: 'LoginComponent',
     data() {
       return {
         user: {
@@ -31,11 +31,14 @@
     methods: {
       login() {
         this.$http.post('authenticate', { user: this.user }).then(function (response) {
-          response.body.auth_token ? this.message = "Logged in" : console.log('nah')
-          this.$store.commit('setToken', response.body.auth_token)
-          console.log(response)
+          if (response.body.error) {
+            this.message = response.body.error.user_authenticate[0]
+          } else {
+            this.$store.commit('setToken', response.body.auth_token)
+            this.message = 'Logged in !'
+          }
         }), (error) => {
-          this.message = "Wrong credentials"
+          this.message = "Something's wrong with the server!"
         }
       }
     }

@@ -4,13 +4,19 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
-  user: {
-    token: ''
+  state: {
+    user: {
+      token: ''
+    }
   },
 
   mutations: {
-    setToken(user, token) {
-      user.token = token
+    setToken(state, token) {
+      state.user.token = token
     }
+  },
+
+  getters: {
+    getToken: state=> { return state.user.token }
   }
 })

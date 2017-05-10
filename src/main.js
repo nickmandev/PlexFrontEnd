@@ -4,19 +4,35 @@ import Vue from 'vue'
 import router from './router/index'
 import resource from 'vue-resource'
 import { store } from './store/index.js'
+import config from '@/config/config.js'
 
 // Components
-import Home from './home.vue'
-import Register from './components/register'
-import Login from './components/login'
+import HomeComponent from './components/Home.vue'
+import RegisterComponent from './components/Register'
+import LoginComponent from './components/Login'
+import App from './App'
 
 Vue.config.productionTip = false
 Vue.use(resource)
 Vue.url.options.root = "http://localhost:3000"
 /* eslint-disable no-new */
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!config.loggedIn()) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
+})
 new Vue({
   el: '#app',
-  template: '<Home/>',
+  template: '<App/>',
   router,
   http: {
     headers:{
@@ -26,6 +42,6 @@ new Vue({
     },
     origin: 'http://localhost:3000'
   },
-  components: { Home, Register, Login },
-  store,
+  components: { HomeComponent, LoginComponent, RegisterComponent, App },
+  store
 })

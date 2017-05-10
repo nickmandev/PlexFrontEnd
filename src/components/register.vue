@@ -26,7 +26,7 @@
 <script>
   import config from '../config/config';
   export default {
-    name: 'Register',
+    name: 'RegisterComponent',
     data() {
       return {
         user: {
