@@ -4,6 +4,7 @@ import RegisterComponent from '@/components/Register'
 import HomeComponent from '@/components/Home'
 import LoginComponent from '@/components/Login'
 import UploadComponent from '@/components/Upload'
+import VideosComponent from '@/components/Videos'
 import App from '@/App'
 import config from '@/config/config.js'
 
@@ -37,6 +38,12 @@ export default new Router({
       path: '/upload',
       name: 'Upload',
       component: UploadComponent,
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/videos',
+      name: 'Videos',
+      component: VideosComponent,
       meta: {requiresAuth: true}
     }
   ],

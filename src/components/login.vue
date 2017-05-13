@@ -36,6 +36,7 @@
           } else {
             this.$store.commit('setToken', response.body.auth_token)
             this.message = 'Logged in !'
+            this.$router.push('/upload')
           }
         }), (error) => {
           this.message = "Something's wrong with the server!"

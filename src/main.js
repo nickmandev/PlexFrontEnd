@@ -5,16 +5,18 @@ import router from './router/index'
 import resource from 'vue-resource'
 import { store } from './store/index.js'
 import config from '@/config/config.js'
+import VueClip from 'vue-clip'
+
 
 // Components
-import HomeComponent from './components/Home.vue'
-import RegisterComponent from './components/Register'
-import LoginComponent from './components/Login'
 import App from './App'
 
-Vue.config.productionTip = false
+Vue.use(VueClip)
 Vue.use(resource)
+
+Vue.config.productionTip = false
 Vue.url.options.root = "http://localhost:3000"
+
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -29,19 +31,23 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // make sure to always call next()!
   }
-})
+});
+Vue.http.interceptors.push(function(request, next) {
+  request.method = 'POST';
+  request.headers.set('Authorization', this.$store.getters.getToken);
+  next();
+});
 new Vue({
   el: '#app',
   template: '<App/>',
   router,
   http: {
     headers:{
-      Authorization: 'Basic YXBpOnBhc3N3b3Jk',
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': 'http://localhost:3000'
     },
     origin: 'http://localhost:3000'
   },
-  components: { HomeComponent, LoginComponent, RegisterComponent, App },
+  components: {App},
   store
 })
