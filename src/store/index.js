@@ -6,17 +6,22 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     user: {
-      token: ''
+      token: '',
+      video: Object
     }
   },
 
   mutations: {
     setToken(state, token) {
       state.user.token = token
+    },
+    currentVideo(state, video) {
+      state.user.video = video
     }
   },
 
   getters: {
-    getToken: state=> { return state.user.token }
+    getToken: state => { return state.user.token },
+    getVideo: state => { return state.user.video }
   }
 })

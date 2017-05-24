@@ -22,11 +22,16 @@
     name: 'App',
     data() {
       return {
+        token: ''
       }
+    },
+    created(){
+      this.$store.commit('setToken', localStorage.getItem('token'));
     },
     methods: {
       logout() {
-        this.$store.commit('setToken', '')
+        localStorage.setItem('token', '')
+        this.$store.commit('setToken' , '');
         this.$router.push('/login')
       }
     }

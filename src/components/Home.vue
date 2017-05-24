@@ -14,7 +14,7 @@
     },
     methods: {
       logout() {
-        this.$store.commit('setToken', '')
+        localStorage.setItem('token', '')
         this.$router.push('/login')
       }
     }

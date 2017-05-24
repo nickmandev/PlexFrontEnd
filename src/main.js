@@ -32,22 +32,17 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });
-Vue.http.interceptors.push(function(request, next) {
-  request.method = 'POST';
-  request.headers.set('Authorization', this.$store.getters.getToken);
-  next();
-});
 new Vue({
   el: '#app',
   template: '<App/>',
   router,
   http: {
-    headers:{
+    headers: {
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': 'http://localhost:3000'
     },
     origin: 'http://localhost:3000'
   },
-  components: {App},
+  components: { App },
   store
 })

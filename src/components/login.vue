@@ -34,7 +34,8 @@
           if (response.body.error) {
             this.message = response.body.error.user_authenticate[0]
           } else {
-            this.$store.commit('setToken', response.body.auth_token)
+            localStorage.setItem('token', response.body.auth_token)
+            this.$store.commit('setToken', localStorage.getItem('token'))
             this.message = 'Logged in !'
             this.$router.push('/upload')
           }

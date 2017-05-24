@@ -5,6 +5,7 @@ import HomeComponent from '@/components/Home'
 import LoginComponent from '@/components/Login'
 import UploadComponent from '@/components/Upload'
 import VideosComponent from '@/components/Videos'
+import VideoComponent from '@/components/Video'
 import App from '@/App'
 import config from '@/config/config.js'
 
@@ -44,7 +45,13 @@ export default new Router({
       path: '/videos',
       name: 'Videos',
       component: VideosComponent,
-      meta: {requiresAuth: true}
+      meta: {requiresAuth: false}
+    },
+    {
+      path: '/video/:id',
+      name: 'Video',
+      component: VideoComponent,
+      meta: {requiresAuth: false}
     }
   ],
   mode: 'history'
