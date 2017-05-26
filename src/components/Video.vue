@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ name }}</h1>
-    <video id="video" width=600 height=300 controls class="video-js vjs-default-skin">
+    <video v-if="video" id="video" width=600 height=300 controls class="video-js vjs-default-skin">
     </video>
   </div>
 </template>
@@ -25,7 +25,7 @@
       }
     },
     created() {
-      this.video = this.$store.getters.getVideo
+      this.video = JSON.parse(localStorage.getItem('video'));
       this.url480p = `${this.video.url}480/index.m3u8`
       this.url720p = `${this.video.url}720/index.m3u8`
       this.videoData = JSON.parse(this.video.video_data);
@@ -35,9 +35,9 @@
       });
 
     },
-    beforeDestroy(){
-      this.player = '';
-      this.$store.commit('currentVideo', '')
+    beforeDestroy() {
+      this.player.dispose();
+      localStorage.removeItem('video');
     },
     methods: {
       setPlayer() {
@@ -45,6 +45,7 @@
         let url720p = this.url720p;
         this.player = videojs('video')
         this.player.videoJsResolutionSwitcher()
+        this.videoSet = true;
         this.player.updateSrc([
           { type: "application/x-mpegURL", src: `${this.url480p}`, label: '480p' },
           { type: "application/x-mpegURL", src: `${this.url720p}`, label: '720p' },

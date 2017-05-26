@@ -2,15 +2,15 @@
   <div id="login">
     <div v-if="message">{{this.message}}</div>
     <form v-on:submit.prevent="login">
-      <div>
-        <label for="email-username"> Enter Username or Email </label>
-        <input type="text" name="email-username" v-model="user.username">
+      <div class="login-form-container">
+        <div class="login-fields">
+          <input type="text" name="email-username" placeholder="Enter Username or Email" v-model="user.username">
+        </div>
+        <div class="login-fields">
+          <input type="password" name="password" placeholder="Enter password" v-model="user.password">
+        </div>
+        <button class="submit-btn" type="submit">Login</button>
       </div>
-      <div>
-        <label for="password"> Enter password: </label>
-        <input type="password" name="password" v-model="user.password">
-      </div>
-      <button type="submit">Login</button>
     </form>
   </div>
 </template>
@@ -47,3 +47,27 @@
   }
 
 </script>
+
+<style>
+  .login-form-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .login-fields input {
+    border: none;
+    border-bottom: 1px solid #89c5f5;
+    width: 200px;
+    background-color: #fff;
+    font-size: 14px;
+    height: 20px;
+    color: #ddd;
+    text-align: center;
+  }
+  .login-fields input::placeholder {
+    color: #89c5f5;
+    text-align: center;
+  }
+
+</style>

@@ -30,8 +30,8 @@
     },
     methods: {
       openVideo(video) {
-        console.log(video)
-        this.$store.commit('currentVideo', video);
+        let videoJson = JSON.stringify(video)
+        localStorage.setItem('video', videoJson)
         this.$router.push(`/video/${video.id}`);
       }
     }
