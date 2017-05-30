@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ name }}</h1>
+    <h1>{{ videoData.filename | removeExtensions}}</h1>
     <video v-if="video" id="video" width=600 height=300 controls class="video-js vjs-default-skin">
     </video>
   </div>
@@ -29,7 +29,6 @@
       this.url480p = `${this.video.url}480/index.m3u8`
       this.url720p = `${this.video.url}720/index.m3u8`
       this.videoData = JSON.parse(this.video.video_data);
-      this.filterExtensions(this.videoData)
       this.$nextTick(() => {
         this.setPlayer();
       });
@@ -41,26 +40,20 @@
     },
     methods: {
       setPlayer() {
-        let url480p = this.url480p;
-        let url720p = this.url720p;
-        this.player = videojs('video')
-        this.player.videoJsResolutionSwitcher()
-        this.videoSet = true;
-        this.player.updateSrc([
-          { type: "application/x-mpegURL", src: `${this.url480p}`, label: '480p' },
-          { type: "application/x-mpegURL", src: `${this.url720p}`, label: '720p' },
-        ])
-
-      },
-      filterExtensions(value) {
-        let localName = value.metadata.filename
-        let extensions = ['mov', 'avi', 'mkv', 'mp4', '3gp', 'wmv', 'flv', 'vob', 'ogv']
-        extensions.forEach(function (ele) {
-          if (localName.indexOf(`.${ele}`) > -1) {
-            localName = localName.replace(`.${ele}`, '');
+        this.player = videojs('video', {
+          controls: true,
+          plugins: {
+            videoJsResolutionSwitcher: {
+              default: 'low',
+              dynamicLabel: true
+            }
           }
-        });
-        this.name = localName;
+        }, () => {
+          this.player.updateSrc([
+            { type: "application/x-mpegURL", src: `${this.url480p}`, label: '480p', res: 480 },
+            { type: "application/x-mpegURL", src: `${this.url720p}`, label: '720p', res: 720 },
+          ])
+        })
       }
     },
   }
@@ -69,7 +62,7 @@
 
 <style>
   .vjs-resolution-button-label {
-    display: block;
     padding: 10px;
+    display: block;
   }
 </style>

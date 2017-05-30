@@ -2,13 +2,13 @@
   <div id="app">
     <nav>
       <div class="main__navigation">
-        <div v-if="!this.$store.getters.getToken" class="before__authenticate">
+        <div v-if="!this.$store.getters.getToken" class="before-authenticate">
           <router-link to="/sign-up">Register</router-link>
           <router-link to="/login">Login</router-link>
         </div>
-        <div v-else>
+        <div class="after-authenticate" v-else>
           <router-link to="/upload"> Upload video</router-link>
-          <router-link to="/videos"> Video </router-link>
+          <router-link to="/videos"> Videos </router-link>
           <a v-on:click="logout()"> Logout </a>
         </div>
       </div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+
+  require('./assets/styles/main.scss')
   export default {
     name: 'App',
     data() {
@@ -40,39 +42,45 @@
   }
 
 </script>
-<style lang="scss">
+<style>
 
-  body {
-    margin: 0px;
-    font-size: 16px;
-  }
   .main__navigation {
     display: flex;
     background-color: rgba(137, 197, 245, 1);
     width: 100%;
     padding: 10px 20px;
     box-sizing: border-box;
-
-    .before__authenticate {
-      display: flex;
-      width: 100%;
-    }
-
-    a {
-      text-decoration: none;
-      color: #fff;
-      font-size: 1.25rem;
-      margin-right: 10px;
-    }
   }
+
+  .main__content .before__authenticate {
+    display: flex;
+    width: 100%;
+  }
+
   .main__content {
     padding: 30px;
   }
-  h1, h2, h3, h4, h5, h6, {
-    margin: 0px;
-    padding: 0px;
+  .before-authenticate a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.25rem;
+    margin-right: 10px;
   }
-  input {
-    outline: none;
+  .after-authenticate {
+    display: flex;
+    width: 100%;
   }
+  .after-authenticate a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.25rem;
+    margin-right: 10px;
+  }
+  .after-authenticate a:last-child {
+    cursor: pointer;
+  }
+  .after-authenticate a:nth-child(2) {
+    flex: 1;
+  }
+
 </style>

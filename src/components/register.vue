@@ -2,23 +2,21 @@
   <div id="register">
     <div v-if="message">{{this.message}}</div>
     <form v-on:submit.prevent="register">
-      <div class="">
-        <label for="name">Username</label>
-        <input name="name" v-model="user.name" type="text">
+      <div class="authenticate-form-container">
+        <div class="authenticate-fields">
+          <input name="name" placeholder="Username" v-model="user.name" type="text">
+        </div>
+        <div class="authenticate-fields">
+          <input name="email" placeholder="Email" v-model="user.email" type="text">
+        </div>
+        <div class="authenticate-fields">
+          <input name="password"  placeholder="Password" v-model="user.password" type="password">
+        </div>
+        <div class="authenticate-fields">
+          <input name="confirm_password" placeholder="Confirm Password" v-model="confirm_password" type="password">
+        </div>
+        <button class="btn-main">Submit</button>
       </div>
-      <div class="">
-        <label for="email">Email</label>
-        <input name="email" v-model="user.email" type="text">
-      </div>
-      <div class="">
-        <label for="password">Password</label>
-        <input name="password" v-model="user.password" type="password">
-      </div>
-      <div class="">
-        <label for="confirm_password">Confirm Password</label>
-        <input name="confirm_password" v-model="confirm_password" type="password">
-      </div>
-      <button>Submit</button>
     </form>
   </div>
 </template>

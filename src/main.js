@@ -6,7 +6,7 @@ import resource from 'vue-resource'
 import { store } from './store/index.js'
 import config from '@/config/config.js'
 import VueClip from 'vue-clip'
-
+import './assets/styles/main.scss';
 
 // Components
 import App from './App'
@@ -32,6 +32,17 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });
+
+Vue.filter('removeExtensions', (value) => {
+  let extensions = ['mov', 'avi', 'mkv', 'mp4', '3gp', 'wmv', 'flv', 'vob', 'ogv']
+  extensions.forEach(function (ele) {
+    if (value.indexOf(`.${ele}`) > -1) {
+      value = value.replace(`.${ele}`, '');
+    }
+  });
+  return value;
+})
+
 new Vue({
   el: '#app',
   template: '<App/>',
