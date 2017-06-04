@@ -15,10 +15,7 @@
       return {
         options: {
           url: 'http://localhost:3000/videos',
-          paramName: 'video',
-          headers: {
-            Authorization: this.$store.getters.getToken
-          }
+          paramName: 'video'
         }
       }
     }

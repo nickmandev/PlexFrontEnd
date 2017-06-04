@@ -6,6 +6,7 @@ import LoginComponent from '@/components/Login'
 import UploadComponent from '@/components/Upload'
 import VideosComponent from '@/components/Videos'
 import VideoComponent from '@/components/Video'
+import UserComponent from '@/components/User'
 import App from '@/App'
 import config from '@/config/config.js'
 
@@ -15,44 +16,51 @@ export default new Router({
     {
       path: '*',
       redirect: '/home',
-      meta: {requiresAuth: false}
+      meta: { requiresAuth: false }
     },
     {
       path: '/sign-up',
       name: 'Sign-up',
       component: RegisterComponent,
-      meta: {requiresAuth: false}
+      meta: { requiresAuth: false }
     },
     {
       path: '/home',
       name: 'Home',
       component: HomeComponent,
-      meta: {requiresAuth: false}
+      meta: { requiresAuth: false }
     },
     {
       path: '/login',
       name: 'Login',
       component: LoginComponent,
-      meta: {requiresAuth: false}
+      meta: { requiresAuth: false }
     },
     {
       path: '/upload',
       name: 'Upload',
       component: UploadComponent,
-      meta: {requiresAuth: true}
+      meta: { requiresAuth: true }
     },
     {
-      path: '/videos',
+      path: '/videos/',
       name: 'Videos',
       component: VideosComponent,
-      meta: {requiresAuth: false}
+      meta: { requiresAuth: false },
     },
     {
-      path: '/video/:id',
+      path: '/videos/:id',
       name: 'Video',
       component: VideoComponent,
-      meta: {requiresAuth: false}
-    }
+      meta: { requiresAuth: false }
+    },
+    {
+      path: '/user/:name',
+      name: 'User',
+      component: UserComponent,
+      meta: { requiresAuth: false }
+    },
+
   ],
   mode: 'history'
 })

@@ -10,6 +10,8 @@ import './assets/styles/main.scss';
 
 // Components
 import App from './App'
+import Videos from './components/Videos.vue';
+Vue.component('videos', Videos)
 
 Vue.use(VueClip)
 Vue.use(resource)
@@ -41,8 +43,51 @@ Vue.filter('removeExtensions', (value) => {
     }
   });
   return value;
+});
+Vue.filter('convertTime', (value) => {
+  value = (Math.floor(value) / 60).toFixed(2);
+  return value
+});
+Vue.filter('dateParser', (value) => {
+  let date = new Date(value.toString());
+  let today = new Date();
+  let response = '';
+  let diff = 0;
+  if (today > date) {
+    if (today.getMonth() > date.getMonth()) {
+      diff = today.getMonth() - date.getMonth();
+      return response = `${diff} months ago`;
+    }
+    if (today.getFullYear() > date.getFullYear()) {
+      diff = today.getFullYear() - date.getFullYear();
+      return response = `${diff} years ago`;
+    }
+    if (today.getDate() > date.getDate()) {
+      diff = today.getDate() - date.getDate();
+      return response = `${diff} days ago`;
+    }
+    if (today.getDate() === date.getDate()) {
+      if (today.getHours() > date.getHours()) {
+        diff = today.getHours() - date.getHours();
+        return response = `${diff} hours ago`;
+      } else if (today.getMinutes() > date.getMinutes()) {
+        diff = today.getMinutes() - date.getMinutes();
+        return response = `${diff} minutes ago`;
+      }
+    }
+  }
 })
-
+Vue.http.interceptors.push((request, next) => {
+  request.headers.set('Authorization', `${localStorage.getItem('token')}`);
+  next((response) => {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      store.commit('setToken', '')
+      console.log('dont');
+      router.push('/login');
+    }
+  })
+});
 new Vue({
   el: '#app',
   template: '<App/>',
@@ -54,6 +99,6 @@ new Vue({
     },
     origin: 'http://localhost:3000'
   },
-  components: { App },
+  components: { App, Videos },
   store
 })

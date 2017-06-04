@@ -1,20 +1,45 @@
 <template>
-  <div>
+  <div id="videos">
     <h1 class="videos-title">Videos</h1>
-    <div class="videos-container">
+    <div v-if="!userVideos" class="videos-container">
       <div class="video-item" v-for="video in videos">
         <div class="video-item-thumbnail">
           <img :src="video.thumbnail_url">
+          <span class="video-info-duration">{{ video.video_data.duration | convertTime }} min</span>
           <div v-on:click="openVideo(video)" class="video-item-thumbnail-play">
             <i class="fa fa-play-circle" aria-hidden="true"></i>
           </div>
         </div>
         <div class="video-info">
-          <div class="video-item-name">
-            <h4 v-on:click="openVideo(video)">{{ JSON.parse(video.video_data).filename | removeExtensions}}</h4>
+          <div>
+            <h4 class="video-item-name" v-on:click="openVideo(video)">{{ video.video_data.filename | removeExtensions }}</h4>
           </div>
-          <span class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ JSON.parse(video.user_info) }}</span>
-          <span class="video-info-duration"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ (JSON.parse(video.video_data).duration / 60).toFixed(2) }} min</span>
+          <div class="video-item-info-row">
+            <span v-on:click="goToUser(video)" class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ video.user_info }}</span>
+            <span class="video-info-views">Views: {{ video.view_count }}</span>
+            <span v-if="video.created_at" class="video-info-uploaded-at">Uploaded: {{ video.created_at | dateParser }} </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="userVideos">
+      <div v-for="video in userVideos">
+        <div class="video-item-thumbnail">
+          <img :src="video.thumbnail_url">
+          <span class="video-info-duration">{{ video.video_data.duration | convertTime }} min</span>
+          <div v-on:click="openVideo(video)" class="video-item-thumbnail-play">
+            <i class="fa fa-play-circle" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="video-info">
+          <div>
+            <h4 class="video-item-name" v-on:click="openVideo(video)">{{ video.video_data.filename | removeExtensions }}</h4>
+          </div>
+          <div class="video-item-info-row">
+            <span v-on:click="goToUser(video)" class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ video.user_info }}</span>
+            <span class="video-info-views">Views: {{ video.view_count }}</span>
+            <span v-if="video.created_at" class="video-info-uploaded-at">Uploaded: {{ video.created_at | dateParser }} </span>
+          </div>
         </div>
       </div>
     </div>
@@ -24,23 +49,32 @@
 <script>
   import Hls from 'hls.js'
   export default {
-    name: 'VideosComponent',
+    name: 'Videos',
+    props: ['userVideos'],
     data() {
       return {
         videos: []
       }
     },
     created() {
-      let token = this.$store.getters.getToken
-      this.$http.get('videos', { headers: { 'Authorization': `${token}` } }).then((res) => {
+      console.log(this.userVideos);
+      this.$http.get('videos').then((res) => {
         this.videos = res.body.data;
+        this.videos.forEach((ele) => {
+          ele.video_data = JSON.parse(ele.video_data);
+          ele.user_info = JSON.parse(ele.user_info);
+        });
       })
     },
     methods: {
       openVideo(video) {
-        let videoJson = JSON.stringify(video)
-        localStorage.setItem('video', videoJson)
-        this.$router.push(`/video/${video.id}`);
+        let videoId = video.id;
+        localStorage.setItem('videoId', videoId)
+        this.$router.push(`/videos/${videoId}`);
+      },
+      goToUser(video) {
+        let userId = video.user_id;
+        this.$router.push({path: `user/${video.user_info}`, params: {test: userId}})
       }
     }
 
@@ -69,6 +103,7 @@
 
   .video-item-thumbnail {
     position: relative;
+    height: 250px;
   }
 
   .video-item-thumbnail img {
@@ -82,10 +117,14 @@
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 5px;
+    bottom: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.7);
     cursor: pointer;
+  }
+
+  .video-item-thumbnail:hover .video-info-duration {
+    display: none;
   }
 
   .video-item-thumbnail-play i {
@@ -105,24 +144,22 @@
     align-items: center;
     flex-direction: column;
     border-top: 1px solid #eaeaea;
-    margin: 0px 20px;
+    margin: 20px;
     max-width: 300px;
+    align-self: stretch;
     box-shadow: 0px 2px 1px 1px rgba(0, 0, 0, 0.2);
   }
 
   .video-item-name {
     font-size: 1.25rem;
     word-break: break-word;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     width: 100%;
     box-sizing: border-box;
     color: rgba(0, 0, 0, .54);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-content: center;
-  }
-
-  .video-item-name h4 {
     cursor: pointer;
   }
 
@@ -133,14 +170,33 @@
     flex-direction: row;
     flex-wrap: wrap;
     box-sizing: border-box;
-  }
-
-  .video-info-uploader {
     color: rgba(0, 0, 0, .54);
   }
 
   .video-info-duration {
-    color: rgba(0, 0, 0, .54);
+    color: #fff;
     margin-left: auto;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 2px;
+    background-color: #000;
+  }
+
+  .video-info-views {
+    margin-left: auto;
+    flex: 1;
+  }
+
+  .video-info-uploader {
+    flex: 1 1 100%;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+
+  .video-item-info-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="main">
     <nav>
       <div class="main__navigation">
         <div v-if="!this.$store.getters.getToken" class="before-authenticate">
@@ -23,7 +23,7 @@
 
   require('./assets/styles/main.scss')
   export default {
-    name: 'App',
+    name: 'Main',
     data() {
       return {
         token: ''

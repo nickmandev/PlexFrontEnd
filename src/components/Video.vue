@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>{{ videoData.filename | removeExtensions}}</h1>
-    <video v-if="video" id="video" width=600 height=300 controls class="video-js vjs-default-skin">
+    <h1 v-if="data.video">{{ videoData.filename | removeExtensions }}</h1>
+    <video id="video" width=600 height=300 controls class="video-js vjs-default-skin">
     </video>
   </div>
 </template>
@@ -16,27 +16,30 @@
     name: 'Video',
     data() {
       return {
-        video: Object,
-        videoData: Object,
+        data: {},
+        videoData: {},
         name: '',
         url480p: '',
         url720p: '',
         player: '',
       }
     },
-    created() {
-      this.video = JSON.parse(localStorage.getItem('video'));
-      this.url480p = `${this.video.url}480/index.m3u8`
-      this.url720p = `${this.video.url}720/index.m3u8`
-      this.videoData = JSON.parse(this.video.video_data);
-      this.$nextTick(() => {
-        this.setPlayer();
+    beforeCreate() {
+      let id = localStorage.getItem('videoId');
+      let token = localStorage.getItem('token');
+      this.$http.get(`videos/${id}`).then((response) => {
+        this.data['video'] = response.data.video;
+        this.url480p = `${this.data['video'].url}480/index.m3u8`
+        this.url720p = `${this.data['video'].url}720/index.m3u8`
+        this.videoData = JSON.parse(this.data.video.video_data);
+        this.$nextTick(() => {
+          this.setPlayer();
+        });
       });
-
     },
     beforeDestroy() {
       this.player.dispose();
-      localStorage.removeItem('video');
+      localStorage.removeItem('videoId');
     },
     methods: {
       setPlayer() {
