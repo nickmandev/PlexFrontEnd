@@ -22,8 +22,8 @@
         </div>
       </div>
     </div>
-    <div v-if="userVideos">
-      <div v-for="video in userVideos">
+    <div v-if="userVideos" class="videos-container">
+      <div v-for="video in userVideos" class="video-item">
         <div class="video-item-thumbnail">
           <img :src="video.thumbnail_url">
           <span class="video-info-duration">{{ video.video_data.duration | convertTime }} min</span>
@@ -57,7 +57,6 @@
       }
     },
     created() {
-      console.log(this.userVideos);
       this.$http.get('videos').then((res) => {
         this.videos = res.body.data;
         this.videos.forEach((ele) => {
@@ -84,13 +83,14 @@
 </script>
 
 <style lang="scss">
-  @import '../assets/styles/main.scss';
+  @import '../assets/styles/variables.scss';
 
   .videos-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
   }
 
@@ -143,7 +143,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    border-top: 1px solid #eaeaea;
+    background-color: $main-color;
     margin: 20px;
     max-width: 300px;
     align-self: stretch;
@@ -156,7 +156,7 @@
     margin-bottom: 5px;
     width: 100%;
     box-sizing: border-box;
-    color: rgba(0, 0, 0, .54);
+    color: #fff;
     display: flex;
     justify-content: flex-start;
     align-content: center;
@@ -170,7 +170,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     box-sizing: border-box;
-    color: rgba(0, 0, 0, .54);
+    background-color: $main-color;
+    color: #fff;
   }
 
   .video-info-duration {

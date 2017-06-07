@@ -63,7 +63,9 @@
 
 </script>
 
-<style>
+<style lang="scss">
+  @import '../assets/styles/variables.scss';
+
   .vjs-resolution-button-label {
     padding: 10px;
     display: block;

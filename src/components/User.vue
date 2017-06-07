@@ -30,5 +30,5 @@
 </script>
 
 <style>
-
+@import '../assets/styles/variables.scss';
 </style>

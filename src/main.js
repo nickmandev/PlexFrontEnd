@@ -54,13 +54,13 @@ Vue.filter('dateParser', (value) => {
   let response = '';
   let diff = 0;
   if (today > date) {
-    if (today.getMonth() > date.getMonth()) {
-      diff = today.getMonth() - date.getMonth();
-      return response = `${diff} months ago`;
-    }
     if (today.getFullYear() > date.getFullYear()) {
       diff = today.getFullYear() - date.getFullYear();
       return response = `${diff} years ago`;
+    }
+    if (today.getMonth() > date.getMonth()) {
+      diff = today.getMonth() - date.getMonth();
+      return response = `${diff} months ago`;
     }
     if (today.getDate() > date.getDate()) {
       diff = today.getDate() - date.getDate();

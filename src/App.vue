@@ -46,7 +46,7 @@
 
   .main__navigation {
     display: flex;
-    background-color: rgba(137, 197, 245, 1);
+    background-color: #45B29D;
     width: 100%;
     padding: 10px 20px;
     box-sizing: border-box;
@@ -65,6 +65,7 @@
     color: #fff;
     font-size: 1.25rem;
     margin-right: 10px;
+    text-transform: uppercase;
   }
   .after-authenticate {
     display: flex;
@@ -75,12 +76,11 @@
     color: #fff;
     font-size: 1.25rem;
     margin-right: 10px;
+    text-transform: uppercase;
   }
   .after-authenticate a:last-child {
     cursor: pointer;
-  }
-  .after-authenticate a:nth-child(2) {
-    flex: 1;
+    margin-left: auto;
   }
 
 </style>
