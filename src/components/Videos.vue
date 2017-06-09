@@ -36,7 +36,7 @@
             <h4 class="video-item-name" v-on:click="openVideo(video)">{{ video.video_data.filename | removeExtensions }}</h4>
           </div>
           <div class="video-item-info-row">
-            <span v-on:click="goToUser(video)" class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ video.user_info }}</span>
+            <span class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ video.user_info }}</span>
             <span class="video-info-views">Views: {{ video.view_count }}</span>
             <span v-if="video.created_at" class="video-info-uploaded-at">Uploaded: {{ video.created_at | dateParser }} </span>
           </div>

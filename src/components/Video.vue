@@ -3,6 +3,12 @@
     <h1 v-if="data.video">{{ videoData.filename | removeExtensions }}</h1>
     <video id="video" width=600 height=300 controls class="video-js vjs-default-skin">
     </video>
+    <div class="video-comments-section">
+      <form v-on:submit.prevent>
+        <textarea v-model="body"></textarea>
+        <button v-on:click="postComment">Submit</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -22,6 +28,7 @@
         url480p: '',
         url720p: '',
         player: '',
+        body: '',
       }
     },
     beforeCreate() {
@@ -57,6 +64,11 @@
             { type: "application/x-mpegURL", src: `${this.url720p}`, label: '720p', res: 720 },
           ])
         })
+      },
+      postComment() {
+        this.$http.post('comments', { comment: {'body': this.body, 'video_id': this.data['video'].id} }).then((response) => {
+          console.log(response);
+        })
       }
     },
   }
@@ -69,5 +81,9 @@
   .vjs-resolution-button-label {
     padding: 10px;
     display: block;
+  }
+
+  .video-js {
+    margin: auto;
   }
 </style>
