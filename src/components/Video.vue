@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="comments-section">
-      <form v-on:submit.prevent class="create-comment-form">
+      <form v-on:submit.prevent class="create-comment-form" id="createCommentForm">
         <div class="create-comment-textarea-panel">
           <textarea class="create-comment-textarea" v-model="body"></textarea>
         </div>
@@ -23,27 +23,40 @@
           <p v-if="error">{{ error }}</p>
         </div>
         <div class="create-comment-buttons-panel">
-          <button class="btn-main" v-on:click="resetForm">Cancel</button>
-          <button class="btn-main" v-on:click="postComment">Submit</button>
+          <button class="btn-main comments-cancel-btn" v-on:click="resetCommentForm">Cancel</button>
+          <button class="btn-main comments-send-btn" v-on:click="postComment">Submit</button>
         </div>
       </form>
       <div v-if="comments" class="comments-section">
         <div class="comment" v-for="item in comments">
-          <p>{{ item.comment.user_info }} {{ item.comment.created_at | dateParser }} </p>
-          <p>{{ item.comment.body }}</p>
-          <p v-on:click="toogleResponseForm()">Add comment</p>
-          <div class="comment-responses" v-if="item.messages.length > 0">
-            <div v-for="message in item.messages">
-              <p> {{ message.user_info }} {{ message.created_at | dateParser }} </p>
-              <p> {{ message.body }} </p>
-            </div>
+          <div class="comment-first-row">
+            <p>{{ JSON.parse(item.comment.user_info) }} </p>
+            <p> {{ item.comment.created_at | dateParser }} </p>
           </div>
-          <div v-if="showResponseForm" class="comments-reponse-form">
+          <div class="comment-second-row">
+            <p>{{ item.comment.body }}</p>
+          </div>
+          <button v-if="!responseForm" :id="'button-' + item.comment.id" class="btn-main comment-response-button" v-on:click="toogleResponseForm(item.comment.id)">Add comment</button>
+          <div class="comments-response-form hidden" :id="item.comment.id">
             <form v-on:submit.prevent>
-              <textarea v-model="responseBody"></textarea>
-              <p v-if="error">{{ error }}</p>
-              <button v-on:click="postCommentResponse(comment)">Submit</button>
+              <textarea class="comments-response-form-textarea" v-model="responseBody"></textarea>
+              <div class="comments-response-form-button-panel">
+                <p v-if="error">{{ error }}</p>
+                <button class="btn-main comments-cancel-btn" v-on:click="resetForm(item.comment.id)">Cancel</button>
+                <button class="btn-main comments-send-btn" v-on:click="postCommentResponse(item.comment)">Submit</button>
+              </div>
             </form>
+          </div>
+          <div class="comment-responses" v-if="item.messages">
+            <div class="comment" v-for="message in item.messages">
+              <div class="comment-first-row">
+                <p> {{ message.user_info }} </p>
+                <p> {{ message.created_at | dateParser }} </p>
+              </div>
+              <div class="comment-second-row">
+                <p> {{ message.body }} </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +84,7 @@
         body: '',
         responseBody: '',
         error: '',
-        showResponseForm: false,
+        responseForm: false,
         ready: false
       }
     },
@@ -115,8 +128,7 @@
       postComment() {
         this.$http.post('comments', { comment: { 'body': this.body, 'video_id': this.data['video'].id } }).then((response) => {
           if (response.body.comment) {
-            let comment = response.body.comment
-            comment['user_info'] = JSON.parse(comment['user_info'])
+            let comment = response.body
             this.comments.push(comment)
           }
 
@@ -127,21 +139,31 @@
       },
       postCommentResponse(comment) {
         this.$http.post('comments_response', { comments_response: { 'body': this.responseBody, 'comment_id': comment.id } }).then((response) => {
-          console.log(response);
         })
       },
       fetchComments() {
-        console.log(this.data['video'].id);
         this.$http.get(`comments/${this.data['video'].id}`, { comment: { 'video_id': this.data['video'].id } }).then((response) => {
           this.comments = response.body.comments;
-          console.log(this.comments);
         })
       },
-      toogleResponseForm() {
-        this.showResponseForm = !this.showResponseForm;
+      toogleResponseForm(id) {
+        let formContainer = document.getElementById(id);
+        let formShowButton = document.getElementById(`button-${id}`)
+        formContainer.classList.remove('hidden');
+        formShowButton.classList.add('hidden');
       },
-      resetForm() {
-
+      resetForm(id) {
+        let formContainer = document.getElementById(id);
+        formContainer.classList.add('hidden');
+        let formShowButton = document.getElementById(`button-${id}`)
+        formShowButton.classList.remove('hidden');
+        let form = formContainer.querySelector('form');
+        form.reset();
+        this.responseForm = false;
+      },
+      resetCommentForm() {
+        let createCommentForm = document.getElementById('createCommentForm');
+        createCommentForm.reset();
       }
     },
   }
@@ -177,6 +199,9 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    width: 600px;
+    margin: auto;
+    margin-bottom: 20px;
   }
 
   .video-section-info {
@@ -197,8 +222,115 @@
   }
 
   .create-comment-textarea {
+    width: 600px;
+    height: 100px;
+    resize: none;
+    border: 2px solid #45b29d;
+    box-sizing: border-box;
+    font-size: 1rem;
+    color: #334d5c;
+    padding: 10px;
+  }
+
+  .create-comment-buttons-panel {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .comment-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .comment {
+    color: #fff;
+    width: 600px;
+    border: 1px solid #fff;
+    padding: 10px;
+    background-color: #45b29d;
+    margin: auto;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+
+  .comment-first-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .comment-second-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comment-response-button {
+    max-width: 140px;
+    margin-left: auto;
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .comments-response-form {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .comments-response-form-textarea {
+    resize: none;
     width: 400px;
     height: 100px;
-    resize: vertical;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #334d5c;
+  }
+
+  .comments-response-form-button-panel {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .comments-send-btn {
+    margin-left: 10px !important;
+    border: 1px solid #fff !important;
+  }
+
+  .comments-cancel-btn {
+    border: 1px solid #fff !important;
+    color: #ffffff !important;
+    background-color: #E91E63 !important;
+  }
+
+  .comment-responses {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+
+  .comment-responses .comment {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 100px;
+    background-color: #009688;
+    color: #ffffff;
+    margin: 0px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  .comment-responses .comment .comment-first-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .comment-responses .comment .comment-second-row {
+    display: flex;
+    justify-content: flex-start;
   }
 </style>
