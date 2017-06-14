@@ -50,7 +50,7 @@
           <div class="comment-responses" v-if="item.messages">
             <div class="comment" v-for="message in item.messages">
               <div class="comment-first-row">
-                <p> {{ message.user_info }} </p>
+                <p> {{ JSON.parse(message.user_info) }} </p>
                 <p> {{ message.created_at | dateParser }} </p>
               </div>
               <div class="comment-second-row">
@@ -139,6 +139,7 @@
       },
       postCommentResponse(comment) {
         this.$http.post('comments_response', { comments_response: { 'body': this.responseBody, 'comment_id': comment.id } }).then((response) => {
+          console.log(response);
         })
       },
       fetchComments() {
