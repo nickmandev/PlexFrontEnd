@@ -24,10 +24,4 @@
 <style lang="scss">
   @import '../assets/styles/variables.scss';
 
-  .greetings {
-    color: $main-color;
-    font-size: 1.5rem;
-    text-align: center;
-  }
-
 </style>

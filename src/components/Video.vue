@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h1 v-if="data.video" class="video-title">{{ videoData.filename | removeExtensions }}</h1>
+    <h1 v-if="ready" class="video-title">{{ video.videoData.filename | removeExtensions }}</h1>
     <div class="video-section">
       <video id="video" width=600 height=300 controls class="video-js vjs-default-skin">
       </video>
       <div class="video-section-info" v-if="ready">
         <div class="first-row">
-          <p> {{ JSON.parse(data.video.user_info) }} </p>
-          <p> Views: {{ data.video.view_count }} </p>
+          <p> {{ video.userInfo }} </p>
+          <p> Views: {{ video.viewCount }} </p>
         </div>
         <div class="second-row">
-          <p> Uploaded {{ data.video.created_at | dateParser }} </p>
+          <p> Uploaded {{ video.createdAt | dateParser }} </p>
         </div>
       </div>
     </div>
@@ -22,36 +22,38 @@
         <div class="create-comment-error-panel">
           <p v-if="error">{{ error }}</p>
         </div>
-        <div class="create-comment-buttons-panel">
+        <div v-if="body.length > 0" class="create-comment-buttons-panel">
           <button class="btn-main comments-cancel-btn" v-on:click="resetCommentForm">Cancel</button>
           <button class="btn-main comments-send-btn" v-on:click="postComment">Submit</button>
         </div>
       </form>
-      <div v-if="comments" class="comments-section">
-        <div class="comment" v-for="item in comments">
+      <div class="comments-section">
+        <div class="comment" v-for="comment in this.comments" :key="comment.id">
           <div class="comment-first-row">
-            <p>{{ JSON.parse(item.comment.user_info) }} </p>
-            <p> {{ item.comment.created_at | dateParser }} </p>
+            <p>{{ comment.userInfo }} </p>
+            <p> {{ comment.createdAt | dateParser }} </p>
           </div>
           <div class="comment-second-row">
-            <p>{{ item.comment.body }}</p>
+            <p>{{ comment.body }}</p>
           </div>
-          <button v-if="!responseForm" :id="'button-' + item.comment.id" class="btn-main comment-response-button" v-on:click="toogleResponseForm(item.comment.id)">Add comment</button>
-          <div class="comments-response-form hidden" :id="item.comment.id">
+          <button v-if="!responseForm" :id="'button-' + comment.id" class="btn-main comment-response-button" v-on:click="toogleResponseForm(comment.id)">Add comment</button>
+          <div class="comments-response-form hidden" :id="comment.id">
             <form v-on:submit.prevent>
               <textarea class="comments-response-form-textarea" v-model="responseBody"></textarea>
               <div class="comments-response-form-button-panel">
                 <p v-if="error">{{ error }}</p>
-                <button class="btn-main comments-cancel-btn" v-on:click="resetForm(item.comment.id)">Cancel</button>
-                <button class="btn-main comments-send-btn" v-on:click="postCommentResponse(item.comment)">Submit</button>
+                <div v-if="responseBody.length > 0">
+                  <button class="btn-main comments-cancel-btn" v-on:click="resetForm(comment.id)">Cancel</button>
+                  <button class="btn-main comments-send-btn" v-on:click="postCommentResponse(comment)">Submit</button>
+                </div>
               </div>
             </form>
           </div>
-          <div class="comment-responses" v-if="item.messages">
-            <div class="comment" v-for="message in item.messages">
+          <div class="comment-responses" v-if="comment.messages">
+            <div class="comment" v-for="message in comment.messages" :key="message.id">
               <div class="comment-first-row">
-                <p> {{ JSON.parse(message.user_info) }} </p>
-                <p> {{ message.created_at | dateParser }} </p>
+                <p> {{ message.userInfo }} </p>
+                <p> {{ message.createdAt | dateParser }} </p>
               </div>
               <div class="comment-second-row">
                 <p> {{ message.body }} </p>
@@ -67,6 +69,9 @@
 <script>
   import videojs from 'video.js';
   import 'video.js/dist/video-js.css';
+  import { VideoModel } from '../models/VideoModel.ts';
+  import { Comment } from '../models/CommentModel.ts';
+  import { Response } from '../models/ResponseModel.ts';
   window.videojs = videojs;
   require('videojs-contrib-hls/dist/videojs-contrib-hls.js');
   require('videojs-resolution-switcher/lib/videojs-resolution-switcher.js');
@@ -74,32 +79,29 @@
     name: 'Video',
     data() {
       return {
-        data: {},
-        videoData: {},
+        video: Object,
         comments: [],
         name: '',
-        url480p: '',
-        url720p: '',
         player: '',
         body: '',
         responseBody: '',
         error: '',
         responseForm: false,
-        ready: false
+        ready: false,
+        commentForm: '',
+        responseFormFlag: false
       }
     },
     beforeCreate() {
-      let id = localStorage.getItem('videoId');
+      let id = this.$route.params.id;
       let token = localStorage.getItem('token');
       this.$http.get(`videos/${id}`).then((response) => {
-        this.data['video'] = response.data.video;
-        this.url480p = `${this.data['video'].url}480/index.m3u8`
-        this.url720p = `${this.data['video'].url}720/index.m3u8`
-        this.videoData = JSON.parse(this.data.video.video_data);
+        this.video = new VideoModel(response.data.video);
         this.$nextTick(() => {
           this.setPlayer();
           this.ready = true;
           this.fetchComments();
+          this.commentForm = document.getElementById('createCommentForm');
         });
       });
     },
@@ -120,16 +122,17 @@
         },
           () => {
             this.player.updateSrc([
-              { type: "application/x-mpegURL", src: `${this.url480p}`, label: '480p', res: 480 },
-              { type: "application/x-mpegURL", src: `${this.url720p}`, label: '720p', res: 720 },
+              { type: "application/x-mpegURL", src: `${this.video.url480}`, label: '480p', res: 480 },
+              { type: "application/x-mpegURL", src: `${this.video.url720}`, label: '720p', res: 720 },
             ])
           })
       },
       postComment() {
-        this.$http.post('comments', { comment: { 'body': this.body, 'video_id': this.data['video'].id } }).then((response) => {
+        this.$http.post('comments', { comment: { 'body': this.body, 'video_id': this.video.id } }).then((response) => {
           if (response.body.comment) {
-            let comment = response.body
-            this.comments.push(comment)
+            let comment = response.body;
+            this.comments.push(comment);
+            this.body = '';
           }
 
           if (response.body.error) {
@@ -139,34 +142,48 @@
       },
       postCommentResponse(comment) {
         this.$http.post('comments_response', { comments_response: { 'body': this.responseBody, 'comment_id': comment.id } }).then((response) => {
-          console.log(response);
+          this.comments.forEach(ele => {
+            if (ele.id === comment.id) {
+              ele.messages.push(new Response(response.body.response));
+            }
+          })
+          this.responseBody = '';
         })
       },
       fetchComments() {
-        this.$http.get(`comments/${this.data['video'].id}`, { comment: { 'video_id': this.data['video'].id } }).then((response) => {
-          this.comments = response.body.comments;
+        this.$http.get(`comments/${this.video.id}`, { comment: { 'video_id': this.video.id } }).then((response) => {
+          response.body.comments.forEach((comment) => {
+            this.comments.push(new Comment(comment));
+          });
         })
       },
       toogleResponseForm(id) {
         let formContainer = document.getElementById(id);
         let formShowButton = document.getElementById(`button-${id}`)
-        formContainer.classList.remove('hidden');
-        formShowButton.classList.add('hidden');
+        if (!this.responseFormFlag) {
+          formContainer.classList.remove('hidden');
+          formShowButton.classList.add('hidden');
+        }
+        this.responseFormFlag = true;
       },
       resetForm(id) {
         let formContainer = document.getElementById(id);
         formContainer.classList.add('hidden');
         let formShowButton = document.getElementById(`button-${id}`)
         formShowButton.classList.remove('hidden');
-        let form = formContainer.querySelector('form');
-        form.reset();
+        this.responseBody = '';
         this.responseForm = false;
+        this.responseFormFlag = false;
       },
       resetCommentForm() {
-        let createCommentForm = document.getElementById('createCommentForm');
-        createCommentForm.reset();
+        this.body = '';
       }
     },
+    watch: {
+      hideShowButtons: () => {
+
+      }
+    }
   }
 
 </script>
@@ -174,164 +191,5 @@
 <style lang="scss">
   @import '../assets/styles/variables.scss';
 
-  .vjs-resolution-button-label {
-    padding: 10px;
-    display: block;
-  }
 
-  .video-js {
-    margin: auto;
-  }
-
-  .video-title {
-    color: #fff;
-    text-align: center;
-  }
-
-  .video-section {
-    background-color: #334d5c;
-    margin-bottom: 20px;
-    padding: 30px;
-    box-sizing: border-box;
-  }
-
-  .create-comment-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: 600px;
-    margin: auto;
-    margin-bottom: 20px;
-  }
-
-  .video-section-info {
-    width: 600px;
-    padding: 10px;
-    box-sizing: border-box;
-    margin: auto;
-    background-color: $main-color;
-    color: #fff;
-  }
-
-  .video-section-info .first-row,
-  .second-row {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .create-comment-textarea {
-    width: 600px;
-    height: 100px;
-    resize: none;
-    border: 2px solid #45b29d;
-    box-sizing: border-box;
-    font-size: 1rem;
-    color: #334d5c;
-    padding: 10px;
-  }
-
-  .create-comment-buttons-panel {
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .comment-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .comment {
-    color: #fff;
-    width: 600px;
-    border: 1px solid #fff;
-    padding: 10px;
-    background-color: #45b29d;
-    margin: auto;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-  }
-
-  .comment-first-row {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .comment-second-row {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .comment-response-button {
-    max-width: 140px;
-    margin-left: auto;
-    display: flex;
-    margin-bottom: 10px;
-  }
-
-  .comments-response-form {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .comments-response-form-textarea {
-    resize: none;
-    width: 400px;
-    height: 100px;
-    border: none;
-    padding: 10px;
-    box-sizing: border-box;
-    font-size: 14px;
-    color: #334d5c;
-  }
-
-  .comments-response-form-button-panel {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
-
-  .comments-send-btn {
-    margin-left: 10px !important;
-    border: 1px solid #fff !important;
-  }
-
-  .comments-cancel-btn {
-    border: 1px solid #fff !important;
-    color: #ffffff !important;
-    background-color: #E91E63 !important;
-  }
-
-  .comment-responses {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-  }
-
-  .comment-responses .comment {
-    display: flex;
-    flex-direction: column;
-    width: 400px;
-    height: 100px;
-    background-color: #009688;
-    color: #ffffff;
-    margin: 0px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-  }
-
-  .comment-responses .comment .comment-first-row {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .comment-responses .comment .comment-second-row {
-    display: flex;
-    justify-content: flex-start;
-  }
 </style>

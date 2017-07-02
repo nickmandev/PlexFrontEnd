@@ -13,6 +13,7 @@
     "test": "npm run unit && npm run e2e"
   },
   "dependencies": {
+    "ts-loader": "^2.2.1",
     "video.js": "^5.19.2",
     "videojs-contrib-hls": "^5.5.3",
     "videojs-resolution-switcher": "^0.4.2",

@@ -22,11 +22,3 @@
   }
 
 </script>
-<style lang="scss">
-  @import '../assets/styles/variables.scss';
-
-  .dz-clickable {
-    color: $main-color;
-  }
-
-</style>
