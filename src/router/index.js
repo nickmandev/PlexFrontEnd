@@ -7,6 +7,7 @@ import UploadComponent from '@/components/Upload'
 import VideosComponent from '@/components/Videos'
 import VideoComponent from '@/components/Video'
 import UserComponent from '@/components/User'
+import ProfileComponent from '@/components/Profile'
 import App from '@/App'
 import config from '@/config/config.js'
 
@@ -60,6 +61,12 @@ export default new Router({
       component: UserComponent,
       meta: { requiresAuth: false }
     },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: ProfileComponent,
+      meta: { requiresAuth: true }
+    }
 
   ],
   mode: 'history'

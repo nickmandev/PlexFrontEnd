@@ -6,7 +6,7 @@
       </video>
       <div class="video-section-info" v-if="ready">
         <div class="first-row">
-          <p> {{ video.userInfo }} </p>
+          <p v-on:click="goToUser(video.userInfo)"> {{ video.userInfo }} </p>
           <p> Views: {{ video.viewCount }} </p>
         </div>
         <div class="second-row">
@@ -30,7 +30,7 @@
       <div class="comments-section">
         <div class="comment" v-for="comment in this.comments" :key="comment.id">
           <div class="comment-first-row">
-            <p>{{ comment.userInfo }} </p>
+            <p >{{ comment.userInfo }} </p>
             <p> {{ comment.createdAt | dateParser }} </p>
           </div>
           <div class="comment-second-row">
@@ -149,6 +149,9 @@
           })
           this.responseBody = '';
         })
+      },
+      goToUser(name){
+        this.$router.push(`/user/${name}`)
       },
       fetchComments() {
         this.$http.get(`comments/${this.video.id}`, { comment: { 'video_id': this.video.id } }).then((response) => {

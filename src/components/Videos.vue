@@ -37,7 +37,7 @@
           </div>
           <div class="video-item-info-row">
             <span class="video-info-uploader"><i class="fa fa-user-o" aria-hidden="true"></i> {{ video.userInfo }}</span>
-            <span class="video-info-views">Views: {{ video.view_count }}</span>
+            <span class="video-info-views">Views: {{ video.viewCount }}</span>
             <span v-if="video.cratedAt" class="video-info-uploaded-at">Uploaded: {{ video.cratedAt | dateParser }} </span>
           </div>
         </div>
@@ -70,7 +70,7 @@
         this.$router.push(`/videos/${videoId}`);
       },
       goToUser(video) {
-        let userId = video.user_id;
+        let userId = video.userId;
         this.$router.push({path: `user/${video.userInfo}`, params: {test: userId}})
       }
     }

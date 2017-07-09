@@ -9,6 +9,7 @@
         <div class="after-authenticate" v-else>
           <router-link to="/upload"> Upload video</router-link>
           <router-link to="/videos"> Videos </router-link>
+          <router-link to="/profile"> Profile </router-link>
           <a v-on:click="logout()"> Logout </a>
         </div>
       </div>

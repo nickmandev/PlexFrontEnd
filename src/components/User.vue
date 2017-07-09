@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { VideoModel } from '../models/VideoModel';
   export default {
     name: 'UserComponent',
     data() {
@@ -17,12 +18,9 @@
     created() {
       this.params = this.$route.params
       this.$http.get(`collection/${this.params.name}`).then((res) => {
-        this.videos = res.body.data;
-
-        this.videos.forEach((ele) => {
-          ele.video_data = JSON.parse(ele.video_data);
-          ele.user_info = JSON.parse(ele.user_info);
-        });
+        res.body.data.forEach((video) => {
+          this.videos.push(new VideoModel(video));
+        });;
       });
     }
   }

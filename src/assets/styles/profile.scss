@@ -1,0 +1,20 @@
+$img-dimensions: 150px;
+.user {
+  &-avatar{
+    &-preview {
+      width: $img-dimensions;
+      height: $img-dimensions;
+      position: relative;
+      &-close {
+        position: absolute;
+        font-size: 1.25rem;
+        top: 0;
+        right: 0;
+      }
+      &-img {
+        width: $img-dimensions;
+        height: $img-dimensions;
+      }
+    }
+  }
+}
