@@ -1,7 +1,16 @@
 <template>
   <div>
-      <div class="user-name">
-        <input v-bind="username" class="user-name-input" type="text">
+      <div class="user-current-password">
+        <label for="oldPassword">Old Password</label>
+        <input id="oldPassword" v-model="currentPassword" class="user-password-field" type="password">
+      </div>
+      <div class="user-new-password" v-bind:class="{'error': error}">
+        <div v-interactiveLabels>
+          <label for="newPassword">New Password</label>
+          <input id="newPassword" v-model="newPassword" class="user-password-field" type="password">
+        </div>
+        <label for="repeatPassword">Repeat Password</label>
+        <input id="repeatPassword" v-on:focusout="checkPassword" v-model="repeatPassword" class="user-password-field" type="password">
       </div>
       <div class="user-avatar">
         <form  enctype="multipart/form-data">
@@ -17,6 +26,7 @@
 </template>
 
 <script>
+import { User } from '../models/UserModel'
 export default {
   name: 'ProfileComponent',
   data(){
@@ -24,12 +34,17 @@ export default {
       username: '',
       previewEle: HTMLElement,
       previewContaier: HTMLElement,
-      fileInput: HTMLElement
+      fileInput: HTMLElement,
+      user: Object,
+      currentPassword: '',
+      newPassword: '',
+      repeatPassword: '',
+      error: false
     }
   },
   beforeCreate(){
     this.$http.get(`users/`).then((response) => {
-      console.log(response);
+      this.user = new User(response.body.user);
     })
   },
   mounted(){
@@ -38,14 +53,21 @@ export default {
     this.fileInput = document.getElementById('fileInput');
   },
   methods: {
+    checkPassword(){
+      console.log('compare');
+      if (this.newPassword && this.newPassword !== this.repeatPassword) {
+        console.log('error');
+        this.error = true
+      } else {
+        this.error = false
+      }
+    },
     previewAvatar(event) {
       if (!event) {
         this.previewEle.src = 'empty';
         this.previewContaier.classList.add('hidden');
         this.fileInput.value = '';
-        console.log(this.previewEle.src);
       } else {
-        console.log('set SRC', event.target.files[0]);
         this.previewEle.src = URL.createObjectURL(event.target.files[0]);
         this.previewContaier.classList.remove('hidden');
       }
