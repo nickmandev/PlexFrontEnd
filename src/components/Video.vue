@@ -11,6 +11,12 @@
         </div>
         <div class="second-row">
           <p> Uploaded {{ video.createdAt | dateParser }} </p>
+          <div class="video-votes">
+            <i class="fa fa-thumbs-up" v-on:click="vote('up')" aria-hidden="true"></i>
+            <span>{{ video.voteUp }}</span>
+            <i class="fa fa-thumbs-down"  v-on:click="vote('down')" aria-hidden="true"></i>
+            <span>{{ video.voteDown }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -89,7 +95,9 @@
         responseForm: false,
         ready: false,
         commentForm: '',
-        responseFormFlag: false
+        responseFormFlag: false,
+        voted: false,
+        previousVoted: ''
       }
     },
     beforeCreate() {
@@ -108,8 +116,28 @@
     beforeDestroy() {
       this.player.dispose();
       localStorage.removeItem('videoId');
+      this.$http.put(`videos/${this.video.id}`).then((response) => {
+        console.log(response);
+      });
     },
     methods: {
+      vote(which) {
+        if (this.previousVoted === '') {
+          which === 'up' ? this.video.voteUp += 1 : this.video.voteDown += 1
+          this.previousVoted = which
+        } else {
+          if ( !this.voted && this.previousVoted === 'up' && which === 'up') {
+            this.video.voteUp -= 1
+            this.video.voteDown += 1
+            this.voted = true
+          }
+          if (!this.voted && this.previousVoted === 'down' && which === 'down') {
+            this.video.voteDown -= 1
+            this.video.voteUp += 1
+            this.voted = true
+          }
+        }
+      },
       setPlayer() {
         this.player = videojs('video', {
           controls: true,

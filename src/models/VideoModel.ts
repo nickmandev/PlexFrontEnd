@@ -7,11 +7,15 @@ export class VideoModel {
   url480: String;
   url720: String;
   userId: Number;
+  voteUp: Number;
+  voteDown: Number;
   createdAt: Date;
   videoData: Object;
   constructor(data){
     this.id = data.id;
     this.viewCount = data.view_count;
+    this.voteUp = data.vote_up;
+    this.voteDown = data.vote_down;
     this.thumbnailUrl = data.thumbnail_url;
     this.userInfo = JSON.parse(data.user_info);
     this.url480 = `${data.url}480/index.m3u8`;

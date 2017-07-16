@@ -1,20 +1,44 @@
 $img-dimensions: 150px;
-.user {
-  &-avatar{
-    &-preview {
-      width: $img-dimensions;
-      height: $img-dimensions;
-      position: relative;
-      &-close {
-        position: absolute;
-        font-size: 1.25rem;
-        top: 0;
-        right: 0;
-      }
-      &-img {
-        width: $img-dimensions;
-        height: $img-dimensions;
-      }
+.profile {
+    &-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
     }
-  }
+    &-title {
+        color: #fff;
+        padding: 20px;
+    }
+    &-avatar {
+        &-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        &-info {
+          width: 100%;
+          text-align: center;
+        }
+        &-upload-btn {
+          margin-right: 20px;
+        }
+        &-preview {
+            width: $img-dimensions;
+            height: $img-dimensions;
+            position: relative;
+            &-close {
+                position: absolute;
+                font-size: 1.25rem;
+                top: 0;
+                right: 0;
+            }
+            &-img {
+                width: $img-dimensions;
+                height: $img-dimensions;
+            }
+        }
+    }
 }
