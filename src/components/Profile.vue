@@ -65,7 +65,6 @@ export default {
   },
   methods: {
     checkPassword() {
-      console.log('compare');
       if (this.newPassword && this.newPassword !== this.repeatPassword) {
         console.log('error');
         this.error = true
