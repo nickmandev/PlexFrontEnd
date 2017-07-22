@@ -5,16 +5,17 @@ import router from './router/index'
 import resource from 'vue-resource'
 import { store } from './store/index'
 import config from './config/config.js'
-import VueClip from 'vue-clip'
 import './assets/styles/main.scss';
 import './filters/index.ts';
 
 // Components
 import App from './App'
 import Videos from './components/Videos.vue';
-Vue.component('videos', Videos)
+import Upload from './globalComponents/upload/Upload.vue';
 
-Vue.use(VueClip)
+Vue.component('videos', Videos)
+Vue.component('upload', Upload)
+
 Vue.use(resource)
 
 Vue.config.productionTip = false
@@ -40,8 +41,7 @@ Vue.http.interceptors.push((request, next) => {
   next((response) => {
     if (response.status === 401) {
       localStorage.removeItem('token');
-      store.commit('setToken', '')
-      console.log('dont');
+      store.commit('setToken', '');
       router.push('/login');
     }
   })
@@ -57,6 +57,6 @@ new Vue({
     },
     origin: 'http://localhost:3000'
   },
-  components: { App, Videos },
+  components: { App, Videos, Upload },
   store
 })

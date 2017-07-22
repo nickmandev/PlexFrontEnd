@@ -49,7 +49,7 @@
     display: flex;
     background-color: #45B29D;
     width: 100%;
-    padding: 10px 20px;
+    padding: 20px;
     box-sizing: border-box;
   }
 
@@ -65,8 +65,8 @@
     text-decoration: none;
     color: #fff;
     font-size: 1.25rem;
-    margin-right: 10px;
-    text-transform: uppercase;
+    margin-right: 0.625rem;
+
   }
   .after-authenticate {
     display: flex;
@@ -77,7 +77,6 @@
     color: #fff;
     font-size: 1.25rem;
     margin-right: 10px;
-    text-transform: uppercase;
   }
   .after-authenticate a:last-child {
     cursor: pointer;

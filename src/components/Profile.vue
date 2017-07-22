@@ -7,7 +7,7 @@
       <label for="oldPassword">Old Password</label>
       <input id="oldPassword" v-model="currentPassword" type="password">
     </div>
-    <div class="user-new-password" >
+    <div class="user-new-password">
       <div class="interactive-labels" v-interactiveLabels v-bind:class="{'error': error}">
         <label for="newPassword">New Password</label>
         <input id="newPassword" v-model="newPassword" type="password">
@@ -17,27 +17,16 @@
         <input id="repeatPassword" v-on:focusout="checkPassword" v-model="repeatPassword" type="password">
       </div>
     </div>
-    <div class="profile-avatar">
-      <form enctype="multipart/form-data">
-      <div class="profile-avatar-box">
-        <p class="profile-avatar-info">If you want to change your avatar click here.</p>
-        <label for="fileInput" class="btn-main profile-avatar-upload-btn">
-          Upload
-          <input id="fileInput" class="hidden" v-on:change="previewAvatar($event)" accept="image/*" type="file">
-        </label>
-        <div class="hidden profile-avatar-preview">
-          <i v-on:click="previewAvatar()" class="fa fa-window-close profile-avatar-preview-close" aria-hidden="true"></i>
-          <img id="preview" class="profile-avatar-preview-img">
-        </div>
-      </div>
-        <button class="btn-main" v-on:click="uploadAvatar($event)">Update</button>
-      </form>
-    </div>
+    <upload
+      message = "Click on 'Upload', to change your avatar."
+      filter = "image/*"
+      :preview-element="true"
+    ></upload>
   </div>
 </template>
 
 <script>
-import { User } from '../models/UserModel'
+import { UserModel } from '../models/UserModel'
 export default {
   name: 'ProfileComponent',
   data() {
@@ -50,12 +39,12 @@ export default {
       currentPassword: '',
       newPassword: '',
       repeatPassword: '',
-      error: false
+      error: false,
     }
   },
   beforeCreate() {
     this.$http.get(`users/`).then((response) => {
-      this.user = new User(response.body.user);
+      this.user = new UserModel(response.body.user);
     })
   },
   mounted() {
@@ -66,30 +55,10 @@ export default {
   methods: {
     checkPassword() {
       if (this.newPassword && this.newPassword !== this.repeatPassword) {
-        console.log('error');
         this.error = true
       } else {
         this.error = false
       }
-    },
-    previewAvatar(event) {
-      if (!event) {
-        this.previewEle.src = 'empty';
-        this.previewContaier.classList.add('hidden');
-        this.fileInput.value = '';
-      } else {
-        this.previewEle.src = URL.createObjectURL(event.target.files[0]);
-        this.previewContaier.classList.remove('hidden');
-      }
-    },
-    uploadAvatar(event) {
-      let formData = new FormData();
-      formData.append('image', event.target.files[0]);
-      let url = this.$http.options.root;
-      let xhr = new XMLHttpRequest();
-      xhr.open('POST', `${this.$http.options.root}/users-avatar`);
-      xhr.setRequestHeader('Authorization', `${localStorage.getItem('token')}`);
-      xhr.send(formData);
     }
   }
 }

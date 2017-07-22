@@ -2,7 +2,12 @@
     &-card {
         background-color: #358b85 !important;
         background-position: 100% 100% !important;
+        box-shadow: $main-shadow;
         padding: 20px;
+        box-sizing: border-box;
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
         &-avatar {
             max-height: 150px;
             max-width: 150px;
@@ -11,8 +16,8 @@
     }
     &-info {
         background-color: #fff;
+        margin-bottom: 50px;
         &-username {
-            font-size: 1.125rem;
             text-transform: capitalize;
         }
     }
