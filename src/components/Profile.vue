@@ -1,7 +1,7 @@
 <template>
   <div class="profile-wrapper">
     <div class="profile-title">
-      <h2>Here you can change your profile information.</h2>
+      <h4 class="profile-title-element">Here you can change your profile information.</h4>
     </div>
     <div class="interactive-labels" v-interactiveLabels>
       <label for="oldPassword">Old Password</label>

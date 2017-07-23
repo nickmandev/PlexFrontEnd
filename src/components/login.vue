@@ -3,11 +3,13 @@
     <div v-if="message">{{this.message}}</div>
     <form v-on:submit.prevent="login">
       <div class="authenticate-form-container">
-        <div class="authenticate-fields">
-          <input type="text" name="email-username" placeholder="Enter Username or Email" v-model="user.username">
+        <div class="interactive-labels" v-interactiveLabels>
+          <label for="username">Username/Email</label>
+          <input id="username" type="text" name="email-username" v-model="user.username">
         </div>
-        <div class="authenticate-fields">
-          <input type="password" name="password" placeholder="Enter password" v-model="user.password">
+        <div class="interactive-labels" v-interactiveLabels>
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" v-model="user.password">
         </div>
         <button class="btn-main" type="submit">Login</button>
       </div>
@@ -22,7 +24,8 @@
       return {
         user: {
           username: '',
-          password: ''
+          password: '',
+          error: false,
         },
         message: ''
       }

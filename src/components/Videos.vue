@@ -2,7 +2,7 @@
   <div id="videos">
     <h1 class="videos-title">Videos</h1>
     <div v-if="!userVideos" class="videos-container">
-      <div class="video-item" v-for="video in videos" :key="video.id">
+      <v-card class="video-item" v-for="video in videos" :key="video.id">
         <div class="video-item-thumbnail">
           <img :src="video.thumbnailUrl">
           <span class="video-info-duration">{{ video.videoData.duration | convertTime }} min</span>
@@ -20,7 +20,7 @@
             <span v-if="video.cratedAt" class="video-info-uploaded-at">Uploaded: {{ video.cratedAt | dateParser }} </span>
           </div>
         </div>
-      </div>
+      </v-card>
     </div>
     <div v-if="userVideos" class="videos-container">
       <div v-for="video in userVideos" :key="video.id" class="video-item">

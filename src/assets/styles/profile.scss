@@ -13,9 +13,11 @@ $img-dimensions: 150px;
         box-shadow: $main-shadow;
     }
     &-title {
-        color: #fff;
         margin-bottom: 20px;
         text-align: center;
+        &-element {
+          color: #fff;
+        }
     }
     &-avatar {
         &-box {

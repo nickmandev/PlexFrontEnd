@@ -1,6 +1,6 @@
 <template>
   <div>
-    <upload></upload>
+    <upload message = "Click on the button to upload file."></upload>
   </div>
 </template>
 <script>

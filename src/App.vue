@@ -47,7 +47,7 @@
 
   .main__navigation {
     display: flex;
-    background-color: #45B29D;
+    background-color: #424242;
     width: 100%;
     padding: 20px;
     box-sizing: border-box;

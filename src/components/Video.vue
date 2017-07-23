@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 v-if="ready" class="video-title">{{ video.videoData.filename | removeExtensions }}</h1>
+    <h4 v-if="ready" class="video-title">{{ video.videoData.filename | removeExtensions }}</h4>
     <div class="video-section">
       <video id="video" width=600 height=300 controls class="video-js vjs-default-skin">
       </video>
