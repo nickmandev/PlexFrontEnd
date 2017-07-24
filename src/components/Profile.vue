@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-wrapper">
+  <v-card class="profile-wrapper">
     <div class="profile-title">
       <h4 class="profile-title-element">Here you can change your profile information.</h4>
     </div>
@@ -22,7 +22,7 @@
       filter = "image/*"
       :preview-element="true"
     ></upload>
-  </div>
+  </v-card>
 </template>
 
 <script>

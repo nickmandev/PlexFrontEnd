@@ -16,7 +16,7 @@
           <img id="preview" class="profile-avatar-preview-img">
         </div>
       </div>
-      <button class="btn-main" v-on:click="uploadFile($event)">Update</button>
+      <button v-if="previewElement" class="btn-main" v-on:click="uploadFile($event)">Update</button>
     </form>
   </div>
 </template>
@@ -67,6 +67,9 @@ export default {
       } else {
         this.previewEle.src = URL.createObjectURL(event.target.files[0]);
         this.previewContainer.classList.remove('hidden');
+      }
+      if (!previewElement) {
+        this.uploadFile(event);
       }
     }
   }

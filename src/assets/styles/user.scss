@@ -19,6 +19,13 @@
         margin-bottom: 50px;
         &-username {
             text-transform: capitalize;
+            font-size: 4rem;
         }
     }
+      &-change-cover-btn {
+        margin: 0px;
+        outline: none;
+        max-width: 100px;
+        align-self: center;
+      }
 }

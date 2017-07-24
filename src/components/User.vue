@@ -3,7 +3,7 @@
     <div class="user-info">
       <div class="user-card" :style="{'background': `url(${this.user.coverData})`}">
         <img :src="this.user.imageData" class="user-card-avatar"></img>
-        <button>Change cover</button>
+        <button class="btn-main user-change-cover-btn">Change cover</button>
       </div>
       <h1 class="user-info-username">{{ this.user.username }} </h1>
     </div>
