@@ -1,6 +1,14 @@
 <template>
   <div id="login">
-    <div v-if="message">{{this.message}}</div>
+    <v-snackbar
+      :timeout="5000"
+      :error="status === 'error'"
+      :success="status === 'success'"
+      v-model="snackbar"
+    >
+      {{ message }}
+      <v-btn dark flat @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <form v-on:submit.prevent="login">
       <div class="authenticate-form-container">
         <div class="interactive-labels" v-interactiveLabels>
@@ -25,8 +33,9 @@
         user: {
           username: '',
           password: '',
-          error: false,
         },
+        status: '',
+        snackbar: false,
         message: ''
       }
     },
@@ -35,15 +44,19 @@
       login() {
         this.$http.post('authenticate', { user: this.user }).then(function (response) {
           if (response.body.error) {
+            this.status = 'error'
+            this.snackbar = true;
             this.message = response.body.error.user_authenticate[0]
           } else {
             localStorage.setItem('token', response.body.auth_token)
             this.$store.commit('setToken', localStorage.getItem('token'))
+            this.status = 'success'
             this.message = 'Logged in !'
             this.$router.push('/upload')
           }
         }), (error) => {
           this.message = "Something's wrong with the server!"
+          this.status = 'error'
         }
       }
     }

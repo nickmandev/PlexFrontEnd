@@ -9,14 +9,12 @@ $img-dimensions: 150px;
         margin: auto;
         padding: 20px;
         box-sizing: border-box;
-        background: $main-color;
-        box-shadow: $main-shadow;
     }
     &-title {
         margin-bottom: 20px;
         text-align: center;
         &-element {
-          color: #fff;
+          color: $main-color;
         }
     }
     &-avatar {
@@ -55,4 +53,11 @@ $img-dimensions: 150px;
             }
         }
     }
+}
+
+.interactive-labels {
+  width: 250px !important;
+  input {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px 0px;
+  }
 }

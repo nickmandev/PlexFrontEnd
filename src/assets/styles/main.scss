@@ -109,10 +109,21 @@ input {
 }
 
 .error * {
-  color: red !important;
+  color: red;
 }
 .error {
   input {
     border: 1px solid red;
+  }
+}
+
+.snack {
+  &__content {
+    color: #fff;
+  }
+  .btn {
+    &__content {
+      color: #fff;
+    }
   }
 }
