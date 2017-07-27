@@ -3,24 +3,20 @@
     <form enctype="multipart/form-data">
       <div class="profile-avatar-box">
         <p class="profile-avatar-info">{{message}}</p>
-        <label v-if="previewElement" for="fileInput" class="btn-main profile-avatar-upload-btn">
+        <label for="fileInput" class="btn-main profile-avatar-upload-btn">
           Upload
-          <input id="fileInput" class="hidden" v-on:change="previewAvatar($event)" :accept="filter" type="file">
-        </label>
-        <label v-else for="fileInput" class="btn-main profile-avatar-upload-btn">
-          Upload
-          <input id="fileInput" class="hidden" :accept="filter" type="file">
+          <input id="fileInput" class="hidden" v-on:change="previewItem($event)" :accept="filter" type="file">
         </label>
         <div class="hidden profile-avatar-preview">
-          <i v-on:click="previewAvatar()" class="fa fa-window-close profile-avatar-preview-close" aria-hidden="true"></i>
+          <i v-on:click="removeItem()" class="fa fa-window-close profile-avatar-preview-close" aria-hidden="true"></i>
           <img id="preview" class="profile-avatar-preview-img">
         </div>
       </div>
-      <button v-if="previewElement" class="btn-main" v-on:click="uploadFile($event)">Update</button>
     </form>
   </div>
 </template>
 <script>
+import { store } from '../../store/index.ts'
 export default {
   name: 'Upload',
   props: {
@@ -30,16 +26,12 @@ export default {
     filter: {
       type: String
     },
-    previewElement: {
-      type: Boolean,
-      default: false
-    },
     url: {
-
+      type: String
     }
   },
   data() {
-    return{
+    return {
       previewEle: HTMLElement,
       previewContainer: HTMLElement
     }
@@ -50,27 +42,23 @@ export default {
     this.fileInput = document.getElementById('fileInput');
   },
   methods: {
-    uploadFile(event) {
-      let formData = new FormData();
-      formData.append('file', event.target.files[0]);
+    uploadFile: (formData) => {
       let url = this.$http.options.root;
       let xhr = new XMLHttpRequest();
       xhr.open('POST', `${this.$http.options.root}/${url}`);
       xhr.setRequestHeader('Authorization', `${localStorage.getItem('token')}`);
       xhr.send(formData);
     },
-    previewAvatar: (event) => {
-      if (!event) {
-        this.previewEle.src = 'empty';
-        this.previewContainer.classList.add('hidden');
-        this.fileInput.value = '';
-      } else {
-        this.previewEle.src = URL.createObjectURL(event.target.files[0]);
-        this.previewContainer.classList.remove('hidden');
-      }
-      if (!previewElement) {
-        this.uploadFile(event);
-      }
+    previewItem: (event) => {
+      store.commit('uploadFile', event.target.files[0])
+      this.previewEle.src = URL.createObjectURL(event.target.files[0]);
+      this.previewContainer.classList.remove('hidden');
+    },
+    removeItem: (event) => {
+      store.commit('uploadFile', '')
+      this.previewEle.src = 'empty';
+      this.previewContainer.classList.add('hidden');
+      this.fileInput.value = '';
     }
   }
 }

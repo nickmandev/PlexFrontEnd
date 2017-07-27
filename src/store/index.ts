@@ -8,6 +8,9 @@ export const store = new Vuex.Store({
     user: {
       token: '',
       video: Object
+    },
+    upload: {
+      file: new FormData()
     }
   },
 
@@ -17,11 +20,15 @@ export const store = new Vuex.Store({
     },
     currentVideo(state, video) {
       state.user.video = video
+    },
+    uploadFile(state, file) {
+      state.upload.file.append('item', file)
     }
   },
 
   getters: {
     getToken: state => { return state.user.token },
-    getVideo: state => { return state.user.video }
+    getVideo: state => { return state.user.video },
+    getItem: state => {return state.upload.file}
   }
 })

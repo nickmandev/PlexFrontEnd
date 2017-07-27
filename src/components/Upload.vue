@@ -3,7 +3,9 @@
     <upload
       message = "Click on the button to upload file."
       filter = "video/mp4,video/x-m4v,video/mkv,video/*"
-    ></upload>
+    >
+    </upload>
+    <button></button>
   </div>
 </template>
 <script>
