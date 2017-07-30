@@ -12,8 +12,10 @@ import  '../node_modules/vuetify/dist/vuetify.min.css';
 
 // Components
 import App from './App'
-import Videos from './components/Videos.vue';
-import Upload from './globalComponents/upload/Upload.vue';
+import Videos from './global-components/videos/Videos.vue';
+import Upload from './global-components/upload/Upload.vue';
+
+export const eventBus = new Vue();
 
 Vue.component('videos', Videos)
 Vue.component('upload', Upload)

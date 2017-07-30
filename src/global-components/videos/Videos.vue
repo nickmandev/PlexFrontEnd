@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import { VideoModel } from '../models/VideoModel';
+  import { VideoModel } from '../../models/VideoModel';
   import Hls from 'hls.js';
   export default {
     name: 'Videos',

@@ -1,5 +1,5 @@
 @import './variables.scss';
-@import './videos.scss';
+@import '../../global-components/global-components.scss';
 @import './video.scss';
 @import './upload.scss';
 @import './home.scss';
@@ -18,7 +18,7 @@ body {
     font-size: 16px;
     height: 100%;
     background-color: #fff;
-    font-family: 'Lato', sans-serif;
+    font-family: $system !important;
 }
 
 h1,

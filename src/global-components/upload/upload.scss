@@ -1,0 +1,69 @@
+$img-dimensions: 150px;
+.upload {
+    &-file {
+        width: 100%;
+        &-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        &-info {
+            width: 100%;
+            font-size: 1.25rem;
+            text-align: center;
+            color: #000;
+        }
+        &-upload-btn {
+            display: flex;
+            justify-content: center;
+        }
+        &-preview {
+            max-width: $img-dimensions;
+            max-height: $img-dimensions;
+            position: relative;
+            &-close {
+                position: absolute;
+                font-size: 1.25rem;
+                top: 0;
+                right: 0;
+                background: #fff;
+                height: 15px;
+            }
+            &-img {
+                width: $img-dimensions;
+                height: $img-dimensions;
+            }
+            &-file {
+                margin: 0px;
+            }
+        }
+    }
+    &-progress {
+        width: 100%;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &-bar {
+            width: 0%;
+            height: 5px;
+            display: flex;
+            background-color: #4CAF50;;
+            transition: width, 0.2s ease-in-out;
+            &-container {
+                flex: 1 1 auto;
+                display: flex;
+                background: $main-color;
+                height: 5px;
+            }
+        }
+        &-percents {
+            font-size: 14px;
+            margin-left: 5px;
+            min-width: 35px;
+        }
+    }
+}

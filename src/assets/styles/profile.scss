@@ -1,4 +1,3 @@
-$img-dimensions: 150px;
 .profile {
     &-wrapper {
         display: flex;
@@ -17,42 +16,7 @@ $img-dimensions: 150px;
           color: $main-color;
         }
     }
-    &-avatar {
-        &-box {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        &-info {
-            width: 100%;
-            font-size: 1.25rem;
-            text-align: center;
-            color: #fff;
-        }
-        &-upload-btn {
-            display: flex;
-            width: 50px;
-            justify-content: center;
-        }
-        &-preview {
-            width: $img-dimensions;
-            height: $img-dimensions;
-            position: relative;
-            &-close {
-                position: absolute;
-                font-size: 1.25rem;
-                top: 0;
-                right: 0;
-            }
-            &-img {
-                width: $img-dimensions;
-                height: $img-dimensions;
-            }
-        }
-    }
+
 }
 
 .interactive-labels {

@@ -18,15 +18,19 @@
       </div>
     </div>
     <upload
-      message = "Click on 'Upload', to change your avatar."
-      filter = "image/*"
-      :preview-element="true"
-    ></upload>
+      message="Click on 'Upload', to change your avatar."
+      filter="image/*"
+      url="users-avatar"
+      :upload="uploadFile"
+    >
+    </upload>
+    <button class="btn-main" v-on:click="uploadFile = true">Update</button>
   </v-card>
 </template>
 
 <script>
-import { UserModel } from '../models/UserModel'
+import { UserModel } from '../models/UserModel';
+import { eventBus } from '../main';
 export default {
   name: 'ProfileComponent',
   data() {
@@ -40,6 +44,7 @@ export default {
       newPassword: '',
       repeatPassword: '',
       error: false,
+      uploadFile: false,
     }
   },
   beforeCreate() {
@@ -48,17 +53,18 @@ export default {
     })
   },
   mounted() {
-    this.previewEle = document.getElementById('preview');
-    this.previewContaier = this.previewEle.parentElement;
-    this.fileInput = document.getElementById('fileInput');
+    eventBus.$on('complete', this.uploadFinished);
   },
   methods: {
-    checkPassword() {
+    checkPassword: function () {
       if (this.newPassword && this.newPassword !== this.repeatPassword) {
         this.error = true
       } else {
         this.error = false
       }
+    },
+    uploadFinished: function () {
+      this.uploadFile = false;
     }
   }
 }
