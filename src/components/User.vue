@@ -2,7 +2,7 @@
   <div>
     <div class="user-info">
       <div class="user-card" :style="{'background': `url(${this.user.coverData})`}">
-        <img :src="this.user.imageData" class="user-card-avatar"></img>
+        <img :src="avatarUrl" class="user-card-avatar"></img>
         <button class="btn-main user-change-cover-btn">Change cover</button>
       </div>
       <h1 class="user-info-username">{{ this.user.username }} </h1>
@@ -14,13 +14,15 @@
 <script>
 import { VideoModel } from '../models/VideoModel';
 import { UserModel } from '../models/UserModel';
+import config from '../config/config';
   export default {
     name: 'UserComponent',
     data() {
       return {
         params: {},
         videos: [],
-        user: Object
+        user: Object,
+        avatarUrl: ''
       }
     },
     created() {
@@ -34,7 +36,13 @@ import { UserModel } from '../models/UserModel';
     beforeCreate() {
       this.$http.get('users/').then((response) => {
         this.user = new UserModel(response.body.user);
+        this.avatarUrl = `${config.root}/uploads/avatar/${this.user.imageData.id}`
       });
+    },
+    methods: {
+      checkAvatar: function() {
+        this.user.imageData.id ? this.user.imageData.id : this.defaultAvatar;
+      }
     }
   }
 

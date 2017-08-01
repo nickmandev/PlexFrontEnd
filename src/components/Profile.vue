@@ -21,16 +21,15 @@
       message="Click on 'Upload', to change your avatar."
       filter="image/*"
       url="users-avatar"
-      :upload="uploadFile"
+      :upload="this.$store.getters.getUploadFile"
     >
     </upload>
-    <button class="btn-main" v-on:click="uploadFile = true">Update</button>
+    <button class="btn-main" v-on:click="uploadFile()">Update</button>
   </v-card>
 </template>
 
 <script>
 import { UserModel } from '../models/UserModel';
-import { eventBus } from '../main';
 export default {
   name: 'ProfileComponent',
   data() {
@@ -44,7 +43,6 @@ export default {
       newPassword: '',
       repeatPassword: '',
       error: false,
-      uploadFile: false,
     }
   },
   beforeCreate() {
@@ -53,7 +51,6 @@ export default {
     })
   },
   mounted() {
-    eventBus.$on('complete', this.uploadFinished);
   },
   methods: {
     checkPassword: function () {
@@ -63,8 +60,8 @@ export default {
         this.error = false
       }
     },
-    uploadFinished: function () {
-      this.uploadFile = false;
+    uploadFile: function () {
+      this.$store.commit('setUploadFile', true);
     }
   }
 }

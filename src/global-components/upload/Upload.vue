@@ -24,7 +24,6 @@
 </template>
 <script>
 import { store } from '../../store/index'
-import { eventBus } from '../../main';
 import config from '../../config/config'
 export default {
   name: 'Upload',
@@ -54,6 +53,7 @@ export default {
       file: Object,
       progress: 0,
       inProgress: false,
+      xhr: XMLHttpRequest
     }
   },
   mounted: function () {
@@ -64,19 +64,21 @@ export default {
     this.progressBar = document.getElementById('progress-bar');
     this.progressPercents = document.getElementById('progress-percents');
     this.formData = new FormData();
+    this.xhr = new XMLHttpRequest();
   },
   watch: {
     upload: function () {
-      this.uploadFile()
+      if (this.upload === true) {
+        this.uploadFile();
+      }
     }
   },
   methods: {
     uploadFile: function () {
-      let xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener('progress', this.handleProgress, false);
-      xhr.open('POST', `${config.root}/${this.url}`);
-      xhr.setRequestHeader('Authorization', `${localStorage.getItem('token')}`);
-      xhr.send(this.formData);
+      this.xhr.upload.addEventListener('progress', this.handleProgress, false);
+      this.xhr.open('POST', `${config.root}/${this.url}`);
+      this.xhr.setRequestHeader('Authorization', `${localStorage.getItem('token')}`);
+      this.xhr.send(this.formData);
     },
     previewItem: function (event) {
       this.file = event.target.files[0];
@@ -88,7 +90,7 @@ export default {
       this.previewContainer.classList.remove('hidden');
       this.formData.append('file', event.target.files[0]);
     },
-    removeItem: function (event) {
+    removeItem: function () {
       if (this.previewEle.src) {
         this.previewEle.src = 'empty';
       } else {
@@ -106,11 +108,13 @@ export default {
         this.progressBar.style.width = `${this.progress}%`;
         this.progressPercents.innerHTML = `${this.progress}%`;
       }
-      if (this.progress == 100) {
-        this.progress = 0;
+      if (this.progress == '100') {
+        this.xhr.upload.removeEventListener('progress', this.handleProgress, false);
+        this.formData = new FormData();
+        this.progressContainer.classList.add('hidden');
+        store.commit('setUploadFile', false);
+        this.removeItem()
         this.inProgress = false;
-        this.previewContainer.classList.add('hidden');
-        eventBus.$emit('complete', '')
       }
     }
   }
