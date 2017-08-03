@@ -10,8 +10,8 @@ export class UserModel {
     this.id = data.id;
     this.email = data.email;
     this.createdAt = data.created_at;
-    this.imageData = JSON.parse(data.image_data);
+    this.imageData = Object.keys(data.image_data).length ?  JSON.parse(data.image_data): data.image_data;
     this.username = data.name;
-    this.coverData = data.covers_data;
+    this.coverData = Object.keys(data.covers_data).length ?  JSON.parse(data.covers_data): data.covers_data;
   }
 }

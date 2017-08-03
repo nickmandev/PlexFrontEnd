@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="user-info">
-      <div class="user-card" :style="{'background': `url(${this.user.coverData})`}">
+      <div class="user-card" :style="{'background': `url(${this.coverUrl})`}">
         <img :src="avatarUrl" class="user-card-avatar"></img>
         <button class="btn-main user-change-cover-btn">Change cover</button>
       </div>
@@ -22,26 +22,32 @@ import config from '../config/config';
         params: {},
         videos: [],
         user: Object,
-        avatarUrl: ''
+        avatarUrl: '',
+        coverUrl: ''
       }
     },
     created() {
       this.params = this.$route.params
       this.$http.get(`collection/${this.params.name}`).then((res) => {
-        res.body.data.forEach((video) => {
+        res.body.videos.forEach((video) => {
           this.videos.push(new VideoModel(video));
-        });;
-      });
-    },
-    beforeCreate() {
-      this.$http.get('users/').then((response) => {
-        this.user = new UserModel(response.body.user);
-        this.avatarUrl = `${config.root}/uploads/avatar/${this.user.imageData.id}`
+        });
+        this.user = new UserModel(res.body.user);
+        this.checkImageOrCoverData();
       });
     },
     methods: {
-      checkAvatar: function() {
-        this.user.imageData.id ? this.user.imageData.id : this.defaultAvatar;
+      checkImageOrCoverData: function(type) {
+        if(Object.keys(this.user.imageData).length) {
+          this.avatarUrl = `${config.root}/uploads/avatars/${this.user.imageData.id}`
+        } else {
+          this.avatarUrl = `${config.root}/uploads/avatars/default-avatar.jpg`
+        }
+        if(Object.keys(this.user.coverData).length) {
+          this.coverUrl = `${config.root}/uploads/covers/${this.user.coverData.id}`
+        } else {
+          this.coverUrl = `${config.root}/uploads/covers/default-cover.svg`
+        }
       }
     }
   }
