@@ -48,8 +48,10 @@
             this.snackbar = true;
             this.message = response.body.error.user_authenticate[0]
           } else {
-            localStorage.setItem('token', response.body.auth_token)
+            localStorage.setItem('token', response.body.token)
+            localStorage.setItem('username', response.body.username)
             this.$store.commit('setToken', localStorage.getItem('token'))
+            this.$store.commit('setUsername', localStorage.getItem('username'))
             this.status = 'success'
             this.message = 'Logged in !'
             this.$router.push('/upload')

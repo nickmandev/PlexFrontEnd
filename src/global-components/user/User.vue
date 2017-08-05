@@ -2,6 +2,13 @@
   <div>
     <div class="user-info">
       <div class="user-card" :style="{'background': `url(${this.coverUrl})`}">
+        <upload
+          filter="image/*"
+          url="users"
+          :upload="this.$store.getters.getUploadFile"
+          params = 'image_data'
+        >
+        </upload>
         <img :src="avatarUrl" class="user-card-avatar"></img>
         <button class="btn-main user-change-cover-btn">Change cover</button>
       </div>
@@ -12,23 +19,34 @@
 </template>
 
 <script>
-import { VideoModel } from '../models/VideoModel';
-import { UserModel } from '../models/UserModel';
-import config from '../config/config';
+import { VideoModel } from '@/models/VideoModel';
+import { UserModel } from '@/models/UserModel';
+import config from '@/config/config';
   export default {
     name: 'UserComponent',
+    props: {
+      passedUsername: {
+        type: String
+      }
+    },
     data() {
       return {
         params: {},
         videos: [],
         user: Object,
         avatarUrl: '',
-        coverUrl: ''
+        coverUrl: '',
+        username: String
       }
     },
     created() {
-      this.params = this.$route.params
-      this.$http.get(`collection/${this.params.name}`).then((res) => {
+      console.log(this.passedUsername, 'user');
+      if (this.passedUsername) {
+          this.username = this.passedUsername
+      } else {
+          this.username = this.$route.params.name
+      }
+      this.$http.get(`collection/${this.username}`).then((res) => {
         res.body.videos.forEach((video) => {
           this.videos.push(new VideoModel(video));
         });
@@ -53,7 +71,3 @@ import config from '../config/config';
   }
 
 </script>
-
-<style>
-@import '../assets/styles/variables.scss';
-</style>

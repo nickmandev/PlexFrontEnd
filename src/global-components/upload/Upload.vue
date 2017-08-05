@@ -40,6 +40,9 @@ export default {
     upload: {
       type: Boolean,
       default: false
+    },
+    params: {
+      type: String
     }
   },
   data() {
@@ -88,7 +91,7 @@ export default {
         this.previewEle.innerHTML = this.file.name
       }
       this.previewContainer.classList.remove('hidden');
-      this.formData.append('file', event.target.files[0]);
+      this.formData.append(`${params}`, event.target.files[0]);
     },
     removeItem: function () {
       if (this.previewEle.src) {

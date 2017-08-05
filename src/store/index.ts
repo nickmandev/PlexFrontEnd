@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     user: {
-      token: '',
+      token: String,
+      username: String,
       video: Object
     },
     upload: {
@@ -18,6 +19,9 @@ export const store = new Vuex.Store({
     setToken(state, token) {
       state.user.token = token
     },
+    setUsername(state, username) {
+      state.user.username = username
+    },
     currentVideo(state, video) {
       state.user.video = video
     },
@@ -28,6 +32,7 @@ export const store = new Vuex.Store({
 
   getters: {
     getToken: state => { return state.user.token },
+    getUsername: state => { return state.user.username },
     getVideo: state => { return state.user.video },
     getUploadFile: state => { return state.upload.uploadFile }
   }

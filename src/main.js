@@ -14,11 +14,13 @@ import  '../node_modules/vuetify/dist/vuetify.min.css';
 import App from './App'
 import Videos from './global-components/videos/Videos.vue';
 import Upload from './global-components/upload/Upload.vue';
+import User from './global-components/user/User.vue';
 
 export const eventBus = new Vue();
 
 Vue.component('videos', Videos)
 Vue.component('upload', Upload)
+Vue.component('user', User)
 
 Vue.use(Vuetify)
 Vue.use(resource)
@@ -47,6 +49,8 @@ Vue.http.interceptors.push((request, next) => {
     if (response.status === 401) {
       localStorage.removeItem('token');
       store.commit('setToken', '');
+      localStorage.removeItem('username');
+      store.commit('setUsername', '');
       router.push('/login');
     }
   })

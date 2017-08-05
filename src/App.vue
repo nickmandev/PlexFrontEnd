@@ -33,11 +33,14 @@
     },
     created() {
       this.$store.commit('setToken', localStorage.getItem('token'));
+      this.$store.commit('setUsername', localStorage.getItem('username'))
     },
     methods: {
       logout() {
         localStorage.setItem('token', '')
+        localStorage.setItem('username', '')
         this.$store.commit('setToken', '');
+        this.$store.commit('setUsername', '');
         this.$router.push('/login')
       }
     }
