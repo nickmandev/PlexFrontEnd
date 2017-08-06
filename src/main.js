@@ -7,6 +7,7 @@ import { store } from './store/index'
 import config from './config/config.js'
 import './assets/styles/main.scss';
 import './filters/index.ts';
+import './directives/index.ts';
 import Vuetify from 'vuetify';
 import  '../node_modules/vuetify/dist/vuetify.min.css';
 

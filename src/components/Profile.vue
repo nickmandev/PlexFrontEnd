@@ -45,8 +45,6 @@ export default {
       this.user = new UserModel(response.body.user);
     });
   },
-  mounted() {
-  },
   methods: {
     checkPassword: function () {
       if (this.newPassword && this.newPassword !== this.repeatPassword) {
